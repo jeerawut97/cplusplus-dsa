@@ -1,14 +1,16 @@
 #include<iostream>
 #include<vector>
+#include<unordered_map>
 
 using namespace std;
 
 void algorBruteForce(vector<int> nums, int target) {
     string result = "Don't Pass\n";
-    cout  << "Algorithm 1\n";
+    cout  << "Algorithm Brute Force\n";
     for (int i = 0; i < nums.size(); i++) {
         for (int j = i + 1; j  < nums.size(); j++) {
             if (nums[j] == target - nums[i]) {
+                cout  << i << ", " << j << " ";
                 result = "Pass\n";
             }
         }
@@ -16,8 +18,51 @@ void algorBruteForce(vector<int> nums, int target) {
     cout << result;
 }
 
+void algorTwoPassHashTable(vector<int> nums, int target) {
+    string result = "Don't Pass\n";
+    cout  << "Algorithm Two Pass Hash Table\n";
+    unordered_map<int, int> hash;
+    for (int i = 0; i < nums.size(); i++) {
+        hash[nums[i]] = i;
+    }
+    for (int i = 0; i < nums.size(); i++) {
+        int component = target - nums[i];
+        if (hash.find(component) != hash.end() && hash[component] != i) {
+            cout << i << ", " << hash[component] << " ";
+            result = "Pass\n";
+            break;
+        }
+    }
+    cout << result;
+
+}
+
+void algorOnePassHashTable(vector<int> nums, int target) {
+    string result = "Don't Pass\n";
+    cout  << "Algorithm One Pass Hash Table\n";
+    unordered_map<int, int> hash;
+    for (int i = 0; i < nums.size(); i++) {
+        int component = target - nums[i];
+        if (hash.find(component) != hash.end()) {
+            cout << hash[component] << ", " << i << " ";
+            result = "Pass\n";
+            break;
+        }
+        hash[nums[i]] = i;
+    }
+    cout << result;
+
+}
+
 void test(vector<int> nums, int target) {
+    for (int i = 0; i < nums.size(); i++) {
+        cout << nums[i] << " ";
+    }
+    cout << ": " << target << "\n";
     algorBruteForce(nums, target);
+    algorTwoPassHashTable(nums, target);
+    algorOnePassHashTable(nums, target);
+    cout << "--------------------------\n";
 }
 
 int main() {
@@ -39,11 +84,13 @@ int main() {
         Input: nums = [3,3], target = 6
         Output: [0,1]
 
-        Example 3:
+        Example 4:
         Input: nums = [3,2,3], target = 6
         Output: [0,2]
 
-        (nums[j] == target - nums[i])
+        Example 5:
+        Input: nums = [0,0,4,1,2,4], target = 8
+        Output: [0,2]
 
         Constraints:
         2 <= nums.length <= 104
@@ -58,10 +105,12 @@ int main() {
     std::vector<int> nums2 = {3, 2, 4};
     std::vector<int> nums3 = {3, 3};
     std::vector<int> nums4 = {3, 2, 3};
+    std::vector<int> nums5 = {0, 0, 4, 1, 2, 4};
 
     test(nums1, 9);
     test(nums2, 6);
     test(nums3, 6);
     test(nums4, 6);
+    test(nums5, 8);
     return 0;
 }
